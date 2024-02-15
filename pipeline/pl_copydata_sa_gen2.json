@@ -73,6 +73,10 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_adlsgen2_Delimited",
+						"type": "DatasetReference"
+					},
 					"timeout": "0.00:05:00",
 					"sleep": 30
 				}
