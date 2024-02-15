@@ -74,7 +74,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_adlsgen2_Delimited",
+						"referenceName": "ds_sa_delimited",
 						"type": "DatasetReference"
 					},
 					"timeout": "0.00:05:00",
