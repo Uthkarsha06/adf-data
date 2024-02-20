@@ -1,0 +1,25 @@
+{
+	"name": "ds_http_delimited",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_git",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HTTP"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "Uthkarsha06/files/dev/categories.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
