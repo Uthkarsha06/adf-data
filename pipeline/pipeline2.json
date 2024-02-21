@@ -29,7 +29,8 @@
 					"dataset": {
 						"referenceName": "ds_lookup_Delimited",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -60,14 +61,19 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "pipelineReturnValue",
-								"setSystemVariable": true
+								"variableName": "fileName",
+								"value": "1"
 							}
 						}
 					]
 				}
 			}
 		],
+		"variables": {
+			"fileName": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "CopyDataHTTP"
 		},
