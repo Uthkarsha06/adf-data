@@ -58,7 +58,11 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"setSystemVariable": true
+							}
 						}
 					]
 				}
