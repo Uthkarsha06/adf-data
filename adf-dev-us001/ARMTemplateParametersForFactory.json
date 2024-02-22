@@ -5,14 +5,20 @@
 		"factoryName": {
 			"value": "adf-dev-us001"
 		},
-		"ls_sa_connectionString": {
+		"ls_adlsgen2_accountKey": {
 			"value": ""
 		},
-		"ls_adlsgen2_accountKey": {
+		"ls_sa_connectionString": {
 			"value": ""
 		},
 		"ls_adlsgen2_properties_typeProperties_url": {
 			"value": "https://adlsgen002.dfs.core.windows.net/"
+		},
+		"ls_http_git_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		},
+		"ls_kv_properties_typeProperties_baseUrl": {
+			"value": "https://kv-ind-dev.vault.azure.net/"
 		}
 	}
 }
