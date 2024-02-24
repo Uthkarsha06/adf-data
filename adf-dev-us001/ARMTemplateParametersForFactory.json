@@ -19,6 +19,15 @@
 		},
 		"ls_kv_properties_typeProperties_baseUrl": {
 			"value": "https://kv-ind-dev.vault.azure.net/"
+		},
+		"ls_sas_gen2_sasUri": {
+			"value": ""
+		},
+		"ls_sas_gen2_properties_typeProperties_sasToken_secretName": {
+			"value": "SAS-adlsgen002"
+		},
+		"tr_storage_event_properties_typeProperties_scope": {
+			"value": "/subscriptions/515c18d9-5b6f-4dab-aea8-055d5ebb868c/resourceGroups/rg-adls2/providers/Microsoft.Storage/storageAccounts/adlsgen002"
 		}
 	}
 }
