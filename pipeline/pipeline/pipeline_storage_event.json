@@ -1,0 +1,22 @@
+{
+	"name": "pipeline_storage_event",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 60
+				}
+			}
+		],
+		"folder": {
+			"name": "trigger pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-02-24T17:29:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

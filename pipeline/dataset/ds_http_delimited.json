@@ -1,0 +1,34 @@
+{
+	"name": "ds_http_delimited",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_git",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativePath": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HTTP"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().relativePath",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
