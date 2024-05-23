@@ -27,12 +27,44 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Wait1",
-						"type": "Wait",
+						"name": "Lookup1",
+						"type": "Lookup",
 						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
-							"waitTimeInSeconds": 1
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "src_employees",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder": {
+										"value": "@concat('employees',formatDateTime(utcnow(), 'yyyy-MM-dd'))",
+										"type": "Expression"
+									},
+									"subfolder_filename": {
+										"value": "employees.csv",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
 						}
 					}
 				],
@@ -41,7 +73,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_employees')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/src_employees')]",
