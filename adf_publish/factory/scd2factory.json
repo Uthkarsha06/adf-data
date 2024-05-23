@@ -1,0 +1,9 @@
+{
+	"name": "scd2factory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "2cd6999d-e934-4669-9b06-08c27e87db6a",
+		"tenantId": "f5222e6c-5fc6-48eb-8f03-73db18203b63"
+	}
+}
