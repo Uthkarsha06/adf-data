@@ -11,7 +11,31 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"emp_ls_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'emp_ls'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://scd2storage.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "tcp:scd2server.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "scd2db"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "scd2admin"
+		},
+		"emp_ls_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://scd2storage.dfs.core.windows.net/"
 		}
@@ -21,130 +45,61 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
 					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": {
-										"value": "@concat('employees/',formatDateTime(utcNow(), 'yyyy-MM-dd'))",
-										"type": "Expression"
-									},
-									"wildcardFileName": "*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "src_employees",
-								"type": "DatasetReference",
-								"parameters": {
-									"folder": {
-										"value": "@concat('employees/',formatDateTime(utcNow(), 'yyyy-MM-dd'))",
-										"type": "Expression"
-									},
-									"subfolder_filename": {
-										"value": "employees.csv",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
+						"name": "surrkey",
+						"type": "int",
+						"precision": 10
 					},
 					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup1').output.value",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "Data flow1",
-									"type": "ExecuteDataFlow",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataflow": {
-											"referenceName": "dataflow1",
-											"type": "DataFlowReference",
-											"parameters": {},
-											"datasetParameters": {
-												"source1": {
-													"folder": "@concat('employees/',formatDateTime(utcNow(), 'yyyy-MM-dd'))",
-													"subfolder_filename": "employees.csv"
-												},
-												"sink1": {}
-											}
-										},
-										"staging": {},
-										"compute": {
-											"coreCount": 32,
-											"computeType": "MemoryOptimized"
-										},
-										"traceLevel": "Fine"
-									}
-								}
-							]
-						}
+						"name": "empid",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "empname",
+						"type": "nvarchar"
+					},
+					{
+						"name": "gender",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "isActive",
+						"type": "int",
+						"precision": 10
 					}
 				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbl_employee"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/src_employees')]",
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"name": "[concat(parameters('factoryName'), '/empsourcefile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
+					"referenceName": "emp_ls",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -152,51 +107,9 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "sample.csv",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/src_employees')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"folder": {
-						"type": "string"
-					},
-					"subfolder_filename": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().subfolder_filename",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().folder",
-							"type": "Expression"
-						},
-						"fileSystem": "src"
+						"fileName": "employee.csv",
+						"folderPath": "data",
+						"fileSystem": "adfdemo"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -205,33 +118,25 @@
 				},
 				"schema": [
 					{
-						"name": "employee_id",
+						"name": "empid",
 						"type": "String"
 					},
 					{
-						"name": "last_name",
+						"name": "empname",
 						"type": "String"
 					},
 					{
-						"name": "first_name",
+						"name": "gender",
 						"type": "String"
 					},
 					{
-						"name": "birthdate",
-						"type": "String"
-					},
-					{
-						"name": "photo",
-						"type": "String"
-					},
-					{
-						"name": "notes",
+						"name": "country",
 						"type": "String"
 					}
 				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('factoryId'), '/linkedServices/emp_ls')]"
 			]
 		},
 		{
@@ -252,6 +157,46 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"hostNameInCertificate": "",
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/emp_ls')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('emp_ls_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('emp_ls_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -261,48 +206,167 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "src_employees",
+								"referenceName": "empsourcefile",
 								"type": "DatasetReference"
 							},
-							"name": "source1"
+							"name": "empfile"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "empTable"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "DelimitedText1",
+								"referenceName": "AzureSqlTable1",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "addingisActive"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "lookup1"
+						},
+						{
+							"name": "ExistingRows"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "alterRow1"
+						}
+					],
 					"scriptLines": [
 						"source(output(",
-						"          employee_id as string,",
-						"          last_name as string,",
-						"          first_name as string,",
-						"          birthdate as string,",
-						"          photo as string,",
-						"          notes as string",
+						"          empid as integer,",
+						"          empname as string,",
+						"          gender as string,",
+						"          country as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 sink(allowSchemaDrift: true,",
+						"     ignoreNoFilesFound: false) ~> empfile",
+						"source(output(",
+						"          surrkey as integer,",
+						"          empid as integer,",
+						"          empname as string,",
+						"          gender as string,",
+						"          country as string,",
+						"          isActive as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> empTable",
+						"empfile derive(isActive = 1) ~> addingisActive",
+						"empTable select(mapColumn(",
+						"          SQL_surrkey = surrkey,",
+						"          SQL_empid = empid,",
+						"          SQL_empname = empname,",
+						"          SQL_gender = gender,",
+						"          SQL_country = country,",
+						"          SQL_isActive = isActive",
+						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"empfile, select1 lookup(empid == SQL_empid,",
+						"     multiple: true,",
+						"     broadcast: 'auto')~> lookup1",
+						"lookup1 filter(!isNull(SQL_empid)) ~> ExistingRows",
+						"ExistingRows select(mapColumn(",
+						"          SQL_surrkey,",
+						"          SQL_empid,",
+						"          SQL_empname,",
+						"          SQL_gender,",
+						"          SQL_country,",
+						"          SQL_isActive",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 derive(SQL_isActive = 0) ~> derivedColumn1",
+						"derivedColumn1 alterRow(updateIf(1==1)) ~> alterRow1",
+						"addingisActive sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          surrkey as integer,",
+						"          empid as integer,",
+						"          empname as string,",
+						"          gender as string,",
+						"          country as string,",
+						"          isActive as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 2,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          empid,",
+						"          empname,",
+						"          gender,",
+						"          country,",
+						"          isActive",
+						"     )) ~> sink1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          surrkey as integer,",
+						"          empid as integer,",
+						"          empname as string,",
+						"          gender as string,",
+						"          country as string,",
+						"          isActive as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:true,",
+						"     upsertable:false,",
+						"     keys:['surrkey'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          surrkey = SQL_surrkey,",
+						"          empid = SQL_empid,",
+						"          empname = SQL_empname,",
+						"          gender = SQL_gender,",
+						"          country = SQL_country,",
+						"          isActive = SQL_isActive",
+						"     )) ~> sink2"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/src_employees')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
+				"[concat(variables('factoryId'), '/datasets/empsourcefile')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
 			]
 		}
 	]

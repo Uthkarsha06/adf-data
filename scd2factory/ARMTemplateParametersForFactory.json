@@ -8,7 +8,25 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"emp_ls_accountKey": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://scd2storage.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "tcp:scd2server.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "scd2db"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "scd2admin"
+		},
+		"emp_ls_properties_typeProperties_url": {
 			"value": "https://scd2storage.dfs.core.windows.net/"
 		}
 	}
